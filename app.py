@@ -20,10 +20,11 @@ st.set_page_config(
 CUSTOM_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Suravaram&display=swap');
     
     /* Global Typography */
     .main-title {
-        font-family: 'Noto Sans Telugu', sans-serif;
+        font-family: 'Suravaram', serif;
         font-size: 2.2rem;
         font-weight: 700;
         color: #1a1a2e;
@@ -34,9 +35,13 @@ CUSTOM_CSS = """
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Suravaram', serif !important;
+    }
     
     .subtitle {
-        font-family: 'Noto Sans Telugu', sans-serif;
+        font-family: 'Suravaram', serif;
         text-align: center;
         color: #666;
         font-size: 1rem;
@@ -54,13 +59,14 @@ CUSTOM_CSS = """
     }
     
     .meter-name {
-        font-family: 'Noto Sans Telugu', sans-serif;
+        font-family: 'Suravaram', serif;
         font-size: 2rem;
         font-weight: 700;
         margin-bottom: 8px;
     }
     
     .meter-type {
+        font-family: 'Suravaram', serif;
         font-size: 0.9rem;
         opacity: 0.9;
     }
@@ -85,7 +91,7 @@ CUSTOM_CSS = """
     .validation-card.invalid { border-left-color: #ef4444; }
     
     .validation-title {
-        font-family: 'Noto Sans Telugu', sans-serif;
+        font-family: 'Suravaram', serif;
         font-size: 0.85rem;
         color: #666;
         margin-bottom: 4px;
@@ -115,7 +121,7 @@ CUSTOM_CSS = """
     }
     
     .gana-sequence-title {
-        font-family: 'Noto Sans Telugu', sans-serif;
+        font-family: 'Suravaram', serif;
         font-size: 0.85rem;
         color: #64748b;
         margin-bottom: 8px;
@@ -140,7 +146,7 @@ CUSTOM_CSS = """
     }
     
     .line-number {
-        font-family: 'Noto Sans Telugu', sans-serif;
+        font-family: 'Suravaram', serif;
         font-size: 0.75rem;
         color: #94a3b8;
         margin-bottom: 12px;
@@ -168,7 +174,7 @@ CUSTOM_CSS = """
     }
     
     .gana-header {
-        font-family: 'Noto Sans Telugu', sans-serif;
+        font-family: 'Suravaram', serif;
         font-size: 0.75rem;
         font-weight: 600;
         color: #667eea;
@@ -236,7 +242,7 @@ CUSTOM_CSS = """
     }
     
     .yati-title {
-        font-family: 'Noto Sans Telugu', sans-serif;
+        font-family: 'Suravaram', serif;
         font-size: 1rem;
         font-weight: 600;
         color: #92400e;
@@ -319,11 +325,15 @@ if st.button("విశ్లేషించు (Analyze)", type="primary"):
         if id_result.meter_name != "Unknown":
             meter_te = METER_NAMES_TE.get(id_result.meter_name, id_result.meter_name)
             
+            # Breakdown
+            breakdown = id_result.notes[0] if id_result.notes else ""
+
             # Meter Card
             st.markdown(f'''
             <div class="meter-card">
                 <div class="meter-name">{meter_te}</div>
-                <div class="meter-type">వృత్త పద్యం • {id_result.meter_name} • {id_result.confidence}</div>
+                <div class="meter-type">వృత్త పద్యం • {id_result.meter_name} • Confidence: {id_result.confidence}</div>
+                <div style="font-size: 0.8rem; margin-top: 8px; color: rgba(255,255,255,0.8); font-family: 'Suravaram', serif;">{breakdown}</div>
             </div>
             ''', unsafe_allow_html=True)
             
