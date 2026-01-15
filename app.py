@@ -8,7 +8,7 @@ sys.path.insert(0, os.getcwd())
 from telugu_chandas.engine import ChandasEngine
 from telugu_chandas.models import Weight
 from telugu_chandas.locale import GANA_NAMES_TE, UI_STRINGS, METER_NAMES_TE, YATI_CATEGORY_NAMES_TE
-from telugu_chandas.gana import get_ganas_for_vritta
+from telugu_chandas.analyzer import ProsodyAnalyzer
 
 st.set_page_config(
     page_title="తెలుగు ఛందస్సు విశ్లేషకం",
@@ -426,7 +426,7 @@ else:
                 
                 # Get Ganas
                 full_w_str = "".join([item['akshara'].weight.value for item in flattened_aksharas if item['akshara'].weight])
-                ganas_in_line = get_ganas_for_vritta(full_w_str)
+                ganas_in_line = ProsodyAnalyzer.get_ganas(full_w_str)
                 
                 # Build HTML
                 html_parts = []

@@ -1,76 +1,56 @@
 # telugu_chandas/engine.py
 
-from typing import List, Tuple
-from .models import Token, Akshara
-from .tokenizer import normalize_text, split_into_tokens
-from .classifier import classify_token_weights
+from typing import List
+from .models import Token, Akshara, IdentificationResult
+from .tokenizer import TeluguTokenizer
+from .analyzer import ProsodyAnalyzer
+from .identifier import ChandasIdentifier
 
 class ChandasEngine:
     """
     Main entry point for Telugu Chandas analysis.
+    Acts as a Facade over Tokenizer, Analyzer, and Identifier.
     """
     
     def analyze(self, text: str) -> List[Token]:
         """
-        Analyzes the input text and returns a list of Tokens with Aksharas classified.
+        Analyzes the input text and returns a list of Tokens with Aksharas classified (Laghu/Guru).
         """
-        # 1. Normalize
-        norm_text = normalize_text(text)
+        # 1. Normalize & Tokenize
+        norm_text = TeluguTokenizer.normalize(text)
+        tokens = TeluguTokenizer.split_into_tokens(norm_text)
         
-        # 2. Tokenize
-        tokens = split_into_tokens(norm_text)
+        # 2. Classify Weights (Context-aware)
+        # We need to flatten to a list of aksharas to handle cross-word context (e.g., Samyukta at start of next word)
+        # But our current get_weight handles local context. 
+        # Ideally, we should iterate all aksharas in sequence.
         
-        # 3. Classify
-        classify_token_weights(tokens)
-        
+        all_aksharas = []
+        for t in tokens:
+            if t.is_word:
+                all_aksharas.extend(t.aksharas)
+                
+        # Calculate weights
+        for i, ak in enumerate(all_aksharas):
+            nxt = all_aksharas[i+1] if i + 1 < len(all_aksharas) else None
+            # This updates the 'weight' attribute on the Akshara object in-place
+            ProsodyAnalyzer.get_weight(ak, nxt)
+            
         return tokens
 
-    def get_laghu_guru_sequence(self, text: str) -> str:
+    def identify_meter(self, text: str) -> IdentificationResult:
         """
-        Returns a simple string string of I/U weights for the text.
-        Ignores whitespace in output string? 
-        Usually Chandas strings are block based.
-        We'll return a space-separated string per word.
+        Identifies the meter of the given text using the robust registry.
         """
         tokens = self.analyze(text)
-        result_parts = []
+        lines = self.split_tokens_into_lines(tokens)
         
-        for token in tokens:
-            if token.is_word:
-                weights = "".join([a.weight.value for a in token.aksharas if a.weight])
-                result_parts.append(weights)
-            # else: whitespace, ignore or preserve?
-            # Usually we want the pattern.
-        
-        return " ".join(result_parts)
+        identifier = ChandasIdentifier()
+        return identifier.identify(lines)
 
-    def debug_output(self, text: str) -> str:
-        """
-        Returns a detailed string representation of the analysis.
-        """
-        tokens = self.analyze(text)
-        output = []
-        
-        for token in tokens:
-            if token.is_word:
-                word_str = f"Word: '{token.text}'\n"
-                for akshara in token.aksharas:
-                    word_str += f"  - {akshara.text}: {akshara.weight.name} ({akshara.weight.value})\n"
-                    # Add explanation
-                    reasons = []
-                    if akshara.is_intrinsic_guru:
-                        reasons.append("Intrinsic Guru")
-                    if akshara.weight.value == "U" and not akshara.is_intrinsic_guru:
-                        reasons.append("Positional Guru")
-                    
-                    word_str += f"    Reason: {', '.join(reasons) if reasons else 'Laghu'}\n"
-                output.append(word_str)
-                
-        return "\n".join(output)
     def split_tokens_into_lines(self, tokens: List[Token]) -> List[List[Akshara]]:
         """
         Groups aksharas by line based on newline tokens.
-        Returns a list of lists of Aksharas.
         """
         lines = []
         current_line_aksharas = []
@@ -88,13 +68,22 @@ class ChandasEngine:
             
         return lines
 
-    def identify_meter(self, text: str):
+    def debug_output(self, text: str) -> str:
         """
-        Identifies the meter of the given text.
+        Returns a detailed string representation of the analysis for debugging.
         """
         tokens = self.analyze(text)
-        lines = self.split_tokens_into_lines(tokens)
+        output = []
         
-        from .identifier import ChandasIdentifier
-        identifier = ChandasIdentifier()
-        return identifier.identify(lines)
+        for token in tokens:
+            if token.is_word:
+                word_str = f"Word: '{token.text}'\n"
+                for akshara in token.aksharas:
+                    w = akshara.weight
+                    val = w.value if w else "?"
+                    name = w.name if w else "Unknown"
+                    word_str += f"  - {akshara.text}: {name} ({val})\n"
+                output.append(word_str)
+                
+        return "\n".join(output)
+

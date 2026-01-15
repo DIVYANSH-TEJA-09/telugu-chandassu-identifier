@@ -125,3 +125,15 @@ class Token:
     text: str
     is_word: bool
     aksharas: List[Akshara]
+
+@dataclass
+class IdentificationResult:
+    meter_name: str
+    confidence: str # "High", "Medium", "Low" or percentage string
+    confidence_score: float # 0-100
+    ganas_found: List[str] # Ganas of the *first* line or best matching line
+    yati_valid: bool
+    prasa_valid: bool
+    notes: List[str] # General notes (e.g. score breakdown)
+    yati_notes: List[str] = None # Detailed reasons
+    prasa_note: str = ""       # "Main Prasa: X"

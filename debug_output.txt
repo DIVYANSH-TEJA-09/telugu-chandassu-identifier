@@ -1,3 +1,0 @@
-Meter: Unknown
-Confidence: None
-Ganas: ['Ma', 'Sa', 'Ja', 'Sa', 'Ta', 'Ta', 'GaGa']

@@ -1,0 +1,45 @@
+
+# Python standard ignores
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.env
+.venv
+
+# IDEs
+.vscode/
+.idea/
+
+# Project Specific
+telugu_chandas_package/
+debug_*.py
+debug_*.txt
+verify_package.py
+verify_root_app_logic.py
+output.txt
+test_result.txt
+PACKAGE_USAGE_GUIDE.md
