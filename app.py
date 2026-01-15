@@ -297,10 +297,6 @@ CUSTOM_CSS = """
 
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-# Title
-st.markdown('<h1 class="main-title">📜 తెలుగు ఛందస్సు విశ్లేషకం</h1>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle">Telugu Chandas Identifier - Analyze Laghu, Guru weights and identify Vritta meters</p>', unsafe_allow_html=True)
-
 # Initialize Engine
 @st.cache_resource
 def get_engine():
@@ -308,159 +304,173 @@ def get_engine():
 
 engine = get_engine()
 
-# Input
-text_input = st.text_area(
-    "పద్యం నమోదు చేయండి (Enter Telugu Padyam):", 
-    value="భవదున్మేషవిజృంభణంబు పరికింపంగా సరోజాతసం-\nభవు జన్మంబు భవన్నిమేష మమితబ్రహ్మాండకల్పాంత భై-\nరవసంక్షోభిత మన్నఁ దక్కిన భవత్ప్రారంభభూరిక్రియా-\nనివహం బెవ్వరు నేర్తు రిట్టిదని వర్ణింపంగ సర్వేశ్వరా!", 
-    height=180
-)
+# Navigation
+st.sidebar.markdown('### Navigation')
+app_mode = st.sidebar.selectbox("ఎంచుకోండి (Select Mode):", ["ఛందస్సు విశ్లేషణ (Analyzer)", "సమాచారం (Learning Resources)"])
 
-if st.button("విశ్లేషించు (Analyze)", type="primary"):
-    if not text_input.strip():
-        st.warning("దయచేసి పద్యాన్ని నమోదు చేయండి.")
-    else:
-        # 1. Meter Identification
-        id_result = engine.identify_meter(text_input)
-        
-        if id_result.meter_name != "Unknown":
-            meter_te = METER_NAMES_TE.get(id_result.meter_name, id_result.meter_name)
-            
-            # Breakdown
-            breakdown = id_result.notes[0] if id_result.notes else ""
+if app_mode == "సమాచారం (Learning Resources)":
+    from telugu_chandas.learning_materials import render_learning_section
+    render_learning_section()
+    
+else:
+    # Title
+    st.markdown('<h1 class="main-title">📜 తెలుగు ఛందస్సు విశ్లేషకం</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Telugu Chandas Identifier - Analyze Laghu, Guru weights and identify Vritta meters</p>', unsafe_allow_html=True)
 
-            # Meter Card
-            st.markdown(f'''
-            <div class="meter-card">
-                <div class="meter-name">{meter_te}</div>
-                <div class="meter-type">వృత్త పద్యం • {id_result.meter_name} • Confidence: {id_result.confidence}</div>
-                <div style="font-size: 0.8rem; margin-top: 8px; color: rgba(255,255,255,0.8); font-family: 'Suravaram', serif;">{breakdown}</div>
-            </div>
-            ''', unsafe_allow_html=True)
+    # Input
+    # Input
+    text_input = st.text_area(
+        "పద్యం నమోదు చేయండి (Enter Telugu Padyam):", 
+        value="భవదున్మేషవిజృంభణంబు పరికింపంగా సరోజాతసం-\nభవు జన్మంబు భవన్నిమేష మమితబ్రహ్మాండకల్పాంత భై-\nరవసంక్షోభిత మన్నఁ దక్కిన భవత్ప్రారంభభూరిక్రియా-\nనివహం బెవ్వరు నేర్తు రిట్టిదని వర్ణింపంగ సర్వేశ్వరా!", 
+        height=180
+    )
+
+    if st.button("విశ్లేషించు (Analyze)", type="primary"):
+        if not text_input.strip():
+            st.warning("దయచేసి పద్యాన్ని నమోదు చేయండి.")
+        else:
+            # 1. Meter Identification
+            id_result = engine.identify_meter(text_input)
             
-            # Validation Cards
-            yati_status = "valid" if id_result.yati_valid else "invalid"
-            prasa_status = "valid" if id_result.prasa_valid else "invalid"
-            yati_text = "చెల్లింది ✓" if id_result.yati_valid else "చెల్లలేదు ✗"
-            prasa_text = "చెల్లింది ✓" if id_result.prasa_valid else "చెల్లలేదు ✗"
-            
-            st.markdown(f'''
-            <div class="validation-grid">
-                <div class="validation-card {yati_status}">
-                    <div class="validation-title">యతి (Yati)</div>
-                    <div class="validation-value">{yati_text}</div>
-                </div>
-                <div class="validation-card {prasa_status}">
-                    <div class="validation-title">ప్రాస (Prasa)</div>
-                    <div class="validation-value">{prasa_text}</div>
-                    <div class="validation-detail">హల్లు: {id_result.prasa_note}</div>
-                </div>
-            </div>
-            ''', unsafe_allow_html=True)
-            
-            # Gana Sequence
-            ganas_te = [GANA_NAMES_TE.get(g, g) for g in id_result.ganas_found]
-            st.markdown(f'''
-            <div class="gana-sequence">
-                <div class="gana-sequence-title">గణ విభజన (Gana Sequence)</div>
-                <div class="gana-sequence-content">{' '.join(ganas_te)}</div>
-            </div>
-            ''', unsafe_allow_html=True)
-            
-            # Yati Notes
-            if id_result.yati_notes:
-                yati_items = "".join([f'<div class="yati-item">{note}</div>' for note in id_result.yati_notes])
+            if id_result.meter_name != "Unknown":
+                meter_te = METER_NAMES_TE.get(id_result.meter_name, id_result.meter_name)
+                
+                # Breakdown
+                breakdown = id_result.notes[0] if id_result.notes else ""
+
+                # Meter Card
                 st.markdown(f'''
-                <div class="yati-section">
-                    <div class="yati-title">యతి మైత్రి వివరాలు</div>
-                    {yati_items}
+                <div class="meter-card">
+                    <div class="meter-name">{meter_te}</div>
+                    <div class="meter-type">వృత్త పద్యం • {id_result.meter_name} • Confidence: {id_result.confidence}</div>
+                    <div style="font-size: 0.8rem; margin-top: 8px; color: rgba(255,255,255,0.8); font-family: 'Suravaram', serif;">{breakdown}</div>
                 </div>
                 ''', unsafe_allow_html=True)
-        else:
-            st.info(f"గుర్తించబడని వృత్తం (Unknown Meter)")
-        
-        st.divider()
-        st.markdown("### పాద విశ్లేషణ (Line-by-Line Breakdown)")
-        
-        # Analyze FULL text
-        tokens = engine.analyze(text_input)
-        
-        # Group tokens by line
-        lines_of_tokens = []
-        current_line_tokens = []
-        
-        for token in tokens:
-            if not token.is_word and '\n' in token.text:
-                if current_line_tokens:
-                    lines_of_tokens.append(current_line_tokens)
-                    current_line_tokens = []
+                
+                # Validation Cards
+                yati_status = "valid" if id_result.yati_valid else "invalid"
+                prasa_status = "valid" if id_result.prasa_valid else "invalid"
+                yati_text = "చెల్లింది ✓" if id_result.yati_valid else "చెల్లలేదు ✗"
+                prasa_text = "చెల్లింది ✓" if id_result.prasa_valid else "చెల్లలేదు ✗"
+                
+                st.markdown(f'''
+                <div class="validation-grid">
+                    <div class="validation-card {yati_status}">
+                        <div class="validation-title">యతి (Yati)</div>
+                        <div class="validation-value">{yati_text}</div>
+                    </div>
+                    <div class="validation-card {prasa_status}">
+                        <div class="validation-title">ప్రాస (Prasa)</div>
+                        <div class="validation-value">{prasa_text}</div>
+                        <div class="validation-detail">హల్లు: {id_result.prasa_note}</div>
+                    </div>
+                </div>
+                ''', unsafe_allow_html=True)
+                
+                # Gana Sequence
+                ganas_te = [GANA_NAMES_TE.get(g, g) for g in id_result.ganas_found]
+                st.markdown(f'''
+                <div class="gana-sequence">
+                    <div class="gana-sequence-title">గణ విభజన (Gana Sequence)</div>
+                    <div class="gana-sequence-content">{' '.join(ganas_te)}</div>
+                </div>
+                ''', unsafe_allow_html=True)
+                
+                # Yati Notes
+                if id_result.yati_notes:
+                    yati_items = "".join([f'<div class="yati-item">{note}</div>' for note in id_result.yati_notes])
+                    st.markdown(f'''
+                    <div class="yati-section">
+                        <div class="yati-title">యతి మైత్రి వివరాలు</div>
+                        {yati_items}
+                    </div>
+                    ''', unsafe_allow_html=True)
             else:
-                current_line_tokens.append(token)
-        
-        if current_line_tokens:
-            lines_of_tokens.append(current_line_tokens)
-        
-        # Display each line
-        for line_idx, line_tokens in enumerate(lines_of_tokens):
+                st.info(f"గుర్తించబడని వృత్తం (Unknown Meter)")
             
-            # Flatten aksharas
-            flattened_aksharas = []
-            for token in line_tokens:
-                if token.is_word:
-                    n_ak = len(token.aksharas)
-                    for idx, ak in enumerate(token.aksharas):
-                        is_word_end = (idx == n_ak - 1)
-                        flattened_aksharas.append({
-                            'akshara': ak,
-                            'is_word_end': is_word_end
-                        })
+            st.divider()
+            st.markdown("### పాద విశ్లేషణ (Line-by-Line Breakdown)")
             
-            # Get Ganas
-            full_w_str = "".join([item['akshara'].weight.value for item in flattened_aksharas if item['akshara'].weight])
-            ganas_in_line = get_ganas_for_vritta(full_w_str)
+            # Analyze FULL text
+            tokens = engine.analyze(text_input)
             
-            # Build HTML
-            html_parts = []
-            html_parts.append(f'<div class="padyam-container">')
-            html_parts.append(f'<div class="line-number">పాదం {line_idx + 1}</div>')
-            html_parts.append('<div class="padyam-line">')
+            # Group tokens by line
+            lines_of_tokens = []
+            current_line_tokens = []
             
-            current_ak_idx = 0
+            for token in tokens:
+                if not token.is_word and '\n' in token.text:
+                    if current_line_tokens:
+                        lines_of_tokens.append(current_line_tokens)
+                        current_line_tokens = []
+                else:
+                    current_line_tokens.append(token)
             
-            for gana_name_en in ganas_in_line:
-                gana_name_te = GANA_NAMES_TE.get(gana_name_en, gana_name_en)
+            if current_line_tokens:
+                lines_of_tokens.append(current_line_tokens)
+            
+            # Display each line
+            for line_idx, line_tokens in enumerate(lines_of_tokens):
                 
-                chunk_size = 3
-                if gana_name_en in ["GaGa", "GaLa", "LaLa", "Va"]:
-                    chunk_size = 2
-                elif gana_name_en in ["Ga", "La"]:
-                    chunk_size = 1
+                # Flatten aksharas
+                flattened_aksharas = []
+                for token in line_tokens:
+                    if token.is_word:
+                        n_ak = len(token.aksharas)
+                        for idx, ak in enumerate(token.aksharas):
+                            is_word_end = (idx == n_ak - 1)
+                            flattened_aksharas.append({
+                                'akshara': ak,
+                                'is_word_end': is_word_end
+                            })
                 
-                end_idx = min(current_ak_idx + chunk_size, len(flattened_aksharas))
-                chunk_items = flattened_aksharas[current_ak_idx:end_idx]
+                # Get Ganas
+                full_w_str = "".join([item['akshara'].weight.value for item in flattened_aksharas if item['akshara'].weight])
+                ganas_in_line = get_ganas_for_vritta(full_w_str)
                 
-                html_parts.append(f'<div class="gana-block">')
-                html_parts.append(f'<div class="gana-header">{gana_name_te}</div>')
-                html_parts.append('<div class="gana-content">')
+                # Build HTML
+                html_parts = []
+                html_parts.append(f'<div class="padyam-container">')
+                html_parts.append(f'<div class="line-number">పాదం {line_idx + 1}</div>')
+                html_parts.append('<div class="padyam-line">')
                 
-                for item in chunk_items:
-                    ak = item['akshara']
-                    w_val = ak.weight.value if ak.weight else "?"
-                    w_class = f"weight-{w_val}"
+                current_ak_idx = 0
+                
+                for gana_name_en in ganas_in_line:
+                    gana_name_te = GANA_NAMES_TE.get(gana_name_en, gana_name_en)
                     
-                    html_parts.append(f'<div class="akshara-box">')
-                    html_parts.append(f'<span class="weight {w_class}">{w_val}</span>')
-                    html_parts.append(f'<span class="akshara">{ak.text}</span>')
-                    html_parts.append('</div>')
+                    chunk_size = 3
+                    if gana_name_en in ["GaGa", "GaLa", "LaLa", "Va"]:
+                        chunk_size = 2
+                    elif gana_name_en in ["Ga", "La"]:
+                        chunk_size = 1
                     
-                    if item['is_word_end']:
-                        html_parts.append('<div class="word-gap"></div>')
+                    end_idx = min(current_ak_idx + chunk_size, len(flattened_aksharas))
+                    chunk_items = flattened_aksharas[current_ak_idx:end_idx]
+                    
+                    html_parts.append(f'<div class="gana-block">')
+                    html_parts.append(f'<div class="gana-header">{gana_name_te}</div>')
+                    html_parts.append('<div class="gana-content">')
+                    
+                    for item in chunk_items:
+                        ak = item['akshara']
+                        w_val = ak.weight.value if ak.weight else "?"
+                        w_class = f"weight-{w_val}"
+                        
+                        html_parts.append(f'<div class="akshara-box">')
+                        html_parts.append(f'<span class="weight {w_class}">{w_val}</span>')
+                        html_parts.append(f'<span class="akshara">{ak.text}</span>')
+                        html_parts.append('</div>')
+                        
+                        if item['is_word_end']:
+                            html_parts.append('<div class="word-gap"></div>')
+                    
+                    html_parts.append('</div></div>')
+                    
+                    current_ak_idx = end_idx
+                    if current_ak_idx >= len(flattened_aksharas):
+                        break
                 
                 html_parts.append('</div></div>')
                 
-                current_ak_idx = end_idx
-                if current_ak_idx >= len(flattened_aksharas):
-                    break
-            
-            html_parts.append('</div></div>')
-            
-            st.markdown("".join(html_parts), unsafe_allow_html=True)
+                st.markdown("".join(html_parts), unsafe_allow_html=True)
