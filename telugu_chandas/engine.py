@@ -20,21 +20,38 @@ class ChandasEngine:
         norm_text = TeluguTokenizer.normalize(text)
         tokens = TeluguTokenizer.split_into_tokens(norm_text)
         
-        # 2. Classify Weights (Context-aware)
-        # We need to flatten to a list of aksharas to handle cross-word context (e.g., Samyukta at start of next word)
-        # But our current get_weight handles local context. 
-        # Ideally, we should iterate all aksharas in sequence.
+        # 2. Classify Weights (Context-aware, with Wall and Hyphen rules)
+        # WALL RULE: Whitespace = true boundary. Samyukta in Word B does NOT affect Word A.
+        # HYPHEN RULE: Hyphen at end of word = continuation. Samyukta in next word DOES affect this word's last akshara.
         
-        all_aksharas = []
-        for t in tokens:
-            if t.is_word:
-                all_aksharas.extend(t.aksharas)
+        # First, build a list of (word_token, ends_with_hyphen) pairs
+        word_tokens = [(t, t.text.endswith('-')) for t in tokens if t.is_word]
+        
+        for idx, (t, ends_with_hyphen) in enumerate(word_tokens):
+            aksharas = t.aksharas
+            n_ak = len(aksharas)
+            
+            for i, ak in enumerate(aksharas):
+                is_last_akshara = (i + 1 == n_ak)
                 
-        # Calculate weights
-        for i, ak in enumerate(all_aksharas):
-            nxt = all_aksharas[i+1] if i + 1 < len(all_aksharas) else None
-            # This updates the 'weight' attribute on the Akshara object in-place
-            ProsodyAnalyzer.get_weight(ak, nxt)
+                if is_last_akshara:
+                    # Special handling for word-final akshara
+                    if ends_with_hyphen:
+                        # Hyphen continuation: look at next word's first akshara
+                        next_word_idx = idx + 1
+                        if next_word_idx < len(word_tokens):
+                            next_word_aksharas = word_tokens[next_word_idx][0].aksharas
+                            nxt = next_word_aksharas[0] if next_word_aksharas else None
+                        else:
+                            nxt = None
+                    else:
+                        # Normal word end (wall): no cross-word effect
+                        nxt = None
+                else:
+                    # Not last akshara: look at next akshara in same word
+                    nxt = aksharas[i + 1]
+                
+                ProsodyAnalyzer.get_weight(ak, nxt)
             
         return tokens
 
