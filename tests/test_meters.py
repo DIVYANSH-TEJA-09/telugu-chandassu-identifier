@@ -1,42 +1,57 @@
+import pytest
 from telugu_chandas.engine import ChandasEngine
-from telugu_chandas.chandas_rules import get_akshara_vowel
 
-def test_meter_identification():
-    engine = ChandasEngine()
-    
-    # User provided poem (Mattebham)
-    text = """భవదున్మేషవిజృంభణంబు పరికింపంగా సరోజాతసం-
-భవు జన్మంబు భవన్నిమేష మమితబ్రహ్మాండకల్పాంత భై-
-రవసంక్షోభిత మన్నఁ దక్కిన భవత్ప్రారంభభూరిక్రియా-
-నివహం బెవ్వరు నేర్తు రిట్టిదని వర్ణింపంగ సర్వేశ్వరా!"""
-    
-    res = engine.identify_meter(text)
-    
-    with open("test_result.txt", "w", encoding="utf-8") as f:
-        f.write("Analyzing User Poem...\n")
-        f.write(f"Meter: {res.meter_name} ({res.confidence})\n")
-        f.write(f"Yati Valid: {res.yati_valid}\n")
-        f.write(f"Prasa Valid: {res.prasa_valid}\n")
-        f.write(f"Ganas: {res.ganas_found}\n")
-        f.write("Yati Notes:\n")
-        if res.yati_notes:
-            for n in res.yati_notes:
-                f.write(f"- {n}\n")
-            
-        if not res.yati_valid:
-             f.write("\n--- Yati Debug ---\n")
-             lines = engine.split_tokens_into_lines(engine.analyze(text))
-             for idx, line in enumerate(lines):
-                if len(line) >= 14:
-                    ak1 = line[0]
-                    ak2 = line[13] # 14th
-                    v1 = get_akshara_vowel(ak1)
-                    v2 = get_akshara_vowel(ak2)
-                    f.write(f"Line {idx+1}: '{ak1.text}'({v1}) vs '{ak2.text}'({v2})\n")
+engine = ChandasEngine()
 
-    assert res.meter_name == "Mattebham"
-    # assert res.yati_valid == True # Let it run to inspect file
-    print("Run completed. Check test_result.txt")
+MATTEBHAM = (
+    "భవదున్మేషవిజృంభణంబు పరికింపంగా సరోజాతసం-\n"
+    "భవు జన్మంబు భవన్నిమేష మమితబ్రహ్మాండకల్పాంత భై-\n"
+    "రవసంక్షోభిత మన్నఁ దక్కిన భవత్ప్రారంభభూరిక్రియా-\n"
+    "నివహం బెవ్వరు నేర్తు రిట్టిదని వర్ణింపంగ సర్వేశ్వరా!"
+)
 
-if __name__ == "__main__":
-    test_meter_identification()
+
+def test_mattebham_identified():
+    result = engine.identify_meter(MATTEBHAM)
+    assert result.meter_name == "Mattebham"
+
+
+def test_mattebham_confidence():
+    result = engine.identify_meter(MATTEBHAM)
+    assert result.confidence_score >= 80.0
+
+
+def test_mattebham_yati():
+    result = engine.identify_meter(MATTEBHAM)
+    assert result.yati_valid is True
+
+
+def test_mattebham_prasa():
+    result = engine.identify_meter(MATTEBHAM)
+    assert result.prasa_valid is True
+
+
+def test_mattebham_gana_count():
+    result = engine.identify_meter(MATTEBHAM)
+    # Mattebham = Sa Bha Ra Na Ma Ya Va (7 ganas)
+    assert len(result.ganas_found) == 7
+
+
+def test_unknown_meter():
+    result = engine.identify_meter("hello world test")
+    assert result.meter_name == "Unknown"
+
+
+def test_empty_input():
+    result = engine.identify_meter("")
+    assert result.meter_name == "Unknown"
+
+
+def test_result_has_yati_notes():
+    result = engine.identify_meter(MATTEBHAM)
+    assert isinstance(result.yati_notes, list)
+
+
+def test_result_has_prasa_note():
+    result = engine.identify_meter(MATTEBHAM)
+    assert isinstance(result.prasa_note, str)

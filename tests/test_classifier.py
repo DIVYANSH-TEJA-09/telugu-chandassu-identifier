@@ -58,20 +58,15 @@ class TestClassifier(unittest.TestCase):
         self.assertEqual(tokens[0].aksharas[1].weight, Weight.LAGHU, "Mya is Laghu")
 
     def test_boundary_rule(self):
-        # "ర మ్య" -> Ra (L), Mya (L). Space separates.
-        text = "ర మ్య"
-        tokens = split_into_tokens(text)
-        classify_token_weights(tokens)
-        
-        # Token 0: Ra
-        word1 = tokens[0]
-        self.assertEqual(word1.aksharas[0].weight, Weight.LAGHU, "Ra stays Laghu because of boundary")
-        
-        # Token 1: Space
-        
-        # Token 2: Mya
-        word2 = tokens[2]
-        self.assertEqual(word2.aksharas[0].weight, Weight.LAGHU, "Mya is Laghu")
+        # "ర మ్య" -> Ra (L), Mya (L). Space enforces wall — samyukta does NOT cross word boundary.
+        # Wall rule is applied by ChandasEngine.analyze(), not classify_token_weights directly.
+        from telugu_chandas.engine import ChandasEngine
+        tokens = ChandasEngine().analyze("ర మ్య")
+
+        word_tokens = [t for t in tokens if t.is_word]
+        # word_tokens[0] = ర, word_tokens[1] = మ్య
+        self.assertEqual(word_tokens[0].aksharas[0].weight, Weight.LAGHU, "Ra stays Laghu because of boundary")
+        self.assertEqual(word_tokens[1].aksharas[0].weight, Weight.LAGHU, "Mya is Laghu")
 
     def test_pollu_weight(self):
         # "కన్" -> Guru.

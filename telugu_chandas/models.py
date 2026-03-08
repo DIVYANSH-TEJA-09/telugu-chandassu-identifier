@@ -1,6 +1,6 @@
 # telugu_chandas/models.py
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import List, Optional
 
@@ -135,5 +135,5 @@ class IdentificationResult:
     yati_valid: bool
     prasa_valid: bool
     notes: List[str] # General notes (e.g. score breakdown)
-    yati_notes: List[str] = None # Detailed reasons
+    yati_notes: List[str] = field(default_factory=list)
     prasa_note: str = ""       # "Main Prasa: X"

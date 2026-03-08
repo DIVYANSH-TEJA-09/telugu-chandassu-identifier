@@ -1,19 +1,33 @@
 # Telugu Chandas Identifier
 
-A strict, rule-based engine for identifying Laghu/Guru weights in Telugu poetry (Chandassu).
+A rule-based engine for identifying Telugu prosodic meters (Chandassu). Classifies Laghu/Guru weights and matches **Vritta**, **Jati**, and **Upajati** padyam.
 
-## Features
-- **Deterministic Rule Base**: Follows standard Telugu Chandas textbook rules.
-- **Akshara Segmentation**: Correctly splits text into Aksharas, handling:
-    - Vowels (Achchulu)
-    - Consonants (Hallulu) + Vowel Signs (Guninthalu)
-    - Conjuncts (Samyuktaksharalu, Dvitvaksharalu)
-    - Pollu (Word-final Consonant + Virama treated as Guru coda)
-    - Modifiers (Sunna, Visarga)
-- **Weight Classification**:
-    - **Laghu (I)**: Short vowels.
-    - **Guru (U)**: Long vowels, Diphthongs, Modifiers (Sunna/Visarga), Pollu-ending syllables.
-    - **Positional Guru**: A Laghu akshara becomes Guru if followed by a conjunct consonant (double consonant or composite) **in the same word**. This rule **does not cross word boundaries**.
+## Supported Meters
+
+**Vritta** (syllabic — 3-akshara ganas):
+
+| Meter | Gana Sequence | Yati Position |
+|---|---|---|
+| Utpalamala | Bha Ra Na Bha Bha Ra Va | 10 |
+| Champakamala | Na Ja Bha Ja Ja Ja Ra | 11 |
+| Shardulam | Ma Sa Ja Sa Ta Ta Ga | 13 |
+| Mattebham | Sa Bha Ra Na Ma Ya Va | 14 |
+
+**Jati** (matra-based — Surya/Indra ganas, with Prasa):
+
+| Meter | Padas | Structure |
+|---|---|---|
+| Dwipada | 2 | 3 Indra + 1 Surya per pada |
+| Taruvoja | 4 | (3 Indra + 1 Surya) × 2 per pada |
+| Kandam | 4 | Odd: 3 K-ganas, Even: 5 K-ganas |
+
+**Upajati** (Jati without Prasa — Prasa-Yati allowed):
+
+| Meter | Padas | Structure |
+|---|---|---|
+| Ataveladi | 4 | Odd: 3 Indra + 2 Surya, Even: 5 Surya |
+| Tetagiti | 4 | 1 Surya + 2 Indra + 2 Surya per pada |
+| Sisam | 4 | 6 Indra + 2 Surya per pada |
 
 ## Usage
 
@@ -21,17 +35,37 @@ A strict, rule-based engine for identifying Laghu/Guru weights in Telugu poetry 
 from telugu_chandas.engine import ChandasEngine
 
 engine = ChandasEngine()
-text = "ఆదిత్య"
 
-# Analyze
-tokens = engine.analyze(text)
+# Identify meter
+result = engine.identify_meter(poem_text)
+print(result.meter_name)       # e.g. "Mattebham"
+print(result.confidence)       # e.g. "95.0%"
+print(result.yati_valid)       # True / False
+print(result.prasa_valid)      # True / False
+print(result.ganas_found)      # ["Sa", "Bha", "Ra", ...]
+print(result.yati_notes)       # per-line yati detail strings
+print(result.prasa_note)       # prasa consonant string
 
-# Get Sequence
-search_pattern = engine.get_laghu_guru_sequence(text)
-print(search_pattern) 
-# Output: U U I (Aa=U, Di=U(Positional), Tya=I)
+# Analyze weights only
+tokens = engine.analyze(poem_text)
+for token in tokens:
+    if token.is_word:
+        for ak in token.aksharas:
+            print(ak.text, ak.weight.value)  # e.g. "భ" "I"
 
-# Detailed Debug
-print(engine.debug_output(text))
+# Debug weight breakdown
+print(engine.debug_output(poem_text))
 ```
-"# telugu-chandassu-identifier" 
+
+## Run the App
+
+```bash
+streamlit run app.py
+```
+
+## Run Tests
+
+```bash
+pip install pytest
+pytest tests/ -v
+```
