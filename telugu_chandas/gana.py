@@ -49,6 +49,34 @@ VRITTA_GANAS: Dict[str, str] = {
 
 # --- Utility to get Gana from Pattern ---
 
+# --- Jati Gana Definitions ---
+# Weight encoding: U = Guru (2 matras), I = Laghu (1 matra)
+
+# Surya Ganas (2 types, 3 matras each)
+SURYA_GANAS: Dict[str, str] = {
+    "III": "న",   # na gana  - I I I (3 aksharas, 3 matras)
+    "UI":  "గల",  # ga-la    - U I   (2 aksharas, 3 matras)
+}
+
+# Indra Ganas (6 types, 3-4 aksharas each)
+INDRA_GANAS: Dict[str, str] = {
+    "UII":  "భ",   # bha gana - U I I   (3 aksharas)
+    "UIU":  "ర",   # ra gana  - U I U   (3 aksharas)
+    "UUI":  "త",   # ta gana  - U U I   (3 aksharas)
+    "IIII": "నల",  # nal gana - I I I I (4 aksharas)
+    "IIIU": "నగ",  # nag gana - I I I U (4 aksharas)
+    "IIUI": "సల",  # sal gana - I I U I (4 aksharas)
+}
+
+# Kandam Ganas (5 types, all exactly 4 matras, variable akshara count)
+KANDAM_GANAS: Dict[str, str] = {
+    "UU":   "గగన", # ga-ga-na - U U     (2 aksharas, 4 matras)
+    "UII":  "భ",   # bha gana - U I I   (3 aksharas, 4 matras)
+    "IUI":  "జ",   # ja gana  - I U I   (3 aksharas, 4 matras)
+    "IIU":  "స",   # sa gana  - I I U   (3 aksharas, 4 matras)
+    "IIII": "నల",  # nal gana - I I I I (4 aksharas, 4 matras)
+}
+
 def get_ganas_for_vritta(weight_string: str) -> List[str]:
     """
     Splits the weight string into chunks of 3 and maps to Vritta Ganas.

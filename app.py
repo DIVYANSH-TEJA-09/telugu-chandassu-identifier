@@ -7,8 +7,10 @@ sys.path.insert(0, os.getcwd())
 
 from telugu_chandas.engine import ChandasEngine
 from telugu_chandas.models import Weight
-from telugu_chandas.locale import GANA_NAMES_TE, UI_STRINGS, METER_NAMES_TE, YATI_CATEGORY_NAMES_TE
+from telugu_chandas.locale import GANA_NAMES_TE, UI_STRINGS, METER_NAMES_TE, YATI_CATEGORY_NAMES_TE, METER_TYPE_TE
 from telugu_chandas.analyzer import ProsodyAnalyzer
+from telugu_chandas.jati_registry import JatiRegistry
+from telugu_chandas.jati_segmenter import segment_surya_indra, segment_kandam
 
 st.set_page_config(
     page_title="తెలుగు ఛందస్సు విశ్లేషకం",
@@ -297,6 +299,35 @@ CUSTOM_CSS = """
 
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
+def get_line_ganas(w_str: str, meter_name: str, pada_idx: int):
+    """
+    Returns a list of (gana_name_te, chunk_size) for rendering the line breakdown.
+    Uses Jati segmentation for Jati/Upajati meters, Vritta for everything else.
+    Falls back to Vritta if Jati segmentation fails.
+    """
+    jati_meter = JatiRegistry.get(meter_name)
+    if jati_meter is not None and pada_idx < len(jati_meter.pada_structures):
+        structure = jati_meter.pada_structures[pada_idx]
+        if jati_meter.segmentation_type == "surya_indra":
+            seg = segment_surya_indra(w_str, structure)
+        else:
+            seg = segment_kandam(w_str)
+        if seg:
+            return [(name, len(pattern)) for name, pattern in seg]
+
+    # Vritta fallback
+    result = []
+    for g in ProsodyAnalyzer.get_ganas(w_str):
+        if g in ("GaGa", "GaLa", "LaLa", "Va"):
+            size = 2
+        elif g in ("Ga", "La"):
+            size = 1
+        else:
+            size = 3
+        result.append((GANA_NAMES_TE.get(g, g), size))
+    return result
+
+
 # Initialize Engine
 @st.cache_resource
 def get_engine():
@@ -339,10 +370,11 @@ else:
                 breakdown = id_result.notes[0] if id_result.notes else ""
 
                 # Meter Card
+                meter_type_te = METER_TYPE_TE.get(id_result.meter_name, "పద్యం")
                 st.markdown(f'''
                 <div class="meter-card">
                     <div class="meter-name">{meter_te}</div>
-                    <div class="meter-type">వృత్త పద్యం • {id_result.meter_name} • Confidence: {id_result.confidence}</div>
+                    <div class="meter-type">{meter_type_te} • {id_result.meter_name} • Confidence: {id_result.confidence}</div>
                     <div style="font-size: 0.8rem; margin-top: 8px; color: rgba(255,255,255,0.8); font-family: 'Suravaram', serif;">{breakdown}</div>
                 </div>
                 ''', unsafe_allow_html=True)
@@ -411,7 +443,7 @@ else:
             
             # Display each line
             for line_idx, line_tokens in enumerate(lines_of_tokens):
-                
+
                 # Flatten aksharas
                 flattened_aksharas = []
                 for token in line_tokens:
@@ -423,28 +455,20 @@ else:
                                 'akshara': ak,
                                 'is_word_end': is_word_end
                             })
-                
-                # Get Ganas
+
+                # Get Ganas (Jati-aware)
                 full_w_str = "".join([item['akshara'].weight.value for item in flattened_aksharas if item['akshara'].weight])
-                ganas_in_line = ProsodyAnalyzer.get_ganas(full_w_str)
-                
+                ganas_in_line = get_line_ganas(full_w_str, id_result.meter_name, line_idx)
+
                 # Build HTML
                 html_parts = []
                 html_parts.append(f'<div class="padyam-container">')
                 html_parts.append(f'<div class="line-number">పాదం {line_idx + 1}</div>')
                 html_parts.append('<div class="padyam-line">')
-                
+
                 current_ak_idx = 0
-                
-                for gana_name_en in ganas_in_line:
-                    gana_name_te = GANA_NAMES_TE.get(gana_name_en, gana_name_en)
-                    
-                    chunk_size = 3
-                    if gana_name_en in ["GaGa", "GaLa", "LaLa", "Va"]:
-                        chunk_size = 2
-                    elif gana_name_en in ["Ga", "La"]:
-                        chunk_size = 1
-                    
+
+                for gana_name_te, chunk_size in ganas_in_line:
                     end_idx = min(current_ak_idx + chunk_size, len(flattened_aksharas))
                     chunk_items = flattened_aksharas[current_ak_idx:end_idx]
                     

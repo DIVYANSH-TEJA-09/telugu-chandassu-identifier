@@ -20,11 +20,20 @@ GANA_NAMES_TE = {
 
 # Meter Names
 METER_NAMES_TE = {
+    # Vritta
     "Utpalamala": "ఉత్పలమాల",
     "Champakamala": "చంపకమాల",
     "Shardulam": "శార్దూలము",
     "Mattebham": "మత్తేభము",
-    "Unknown": "గుర్తించబడని వృత్తం"
+    # Jati
+    "Dwipada": "ద్వపద",
+    "Taruvoja": "తరువోజ",
+    "Kandam": "కందం",
+    # Upajati
+    "Ataveladi": "ఆటవెలది",
+    "Tetagiti": "తేటగీతి",
+    "Sisam": "సీసం",
+    "Unknown": "గుర్తించబడని పద్యం"
 }
 
 # UI Strings
@@ -44,6 +53,19 @@ UI_STRINGS = {
     "prasa_letter": "ప్రాస అక్షరం (హల్లు)",
     "gana_sequence": "గణ విభజన",
     "notes": "గమనికలు"
+}
+
+METER_TYPE_TE = {
+    "Utpalamala":   "వృత్తం",
+    "Champakamala": "వృత్తం",
+    "Shardulam":    "వృత్తం",
+    "Mattebham":    "వృత్తం",
+    "Dwipada":      "జాతి పద్యం",
+    "Taruvoja":     "జాతి పద్యం",
+    "Kandam":       "జాతి పద్యం",
+    "Ataveladi":    "ఉపజాతి పద్యం",
+    "Tetagiti":     "ఉపజాతి పద్యం",
+    "Sisam":        "ఉపజాతి పద్యం",
 }
 
 YATI_CATEGORY_NAMES_TE = {
