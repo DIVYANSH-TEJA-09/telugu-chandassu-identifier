@@ -1,7 +1,7 @@
-# telugu_chandas/constants.py
+# telugu_chandassu/constants.py
 
 """
-Telugu Character Sets for Chandas Analysis.
+Telugu Character Sets for Chandassu Analysis.
 Based on the project requirements:
 A (Achchulu), H (Hallulu), G (Guninthapu Gurthulu), U (Modifiers), V (Virama), P (Pollu).
 """
@@ -27,7 +27,7 @@ HALLULU = {
     'య', 'ర', 'ల', 'వ', 'శ', 'ష', 'స', 'హ', 'ళ', 'క్ష', 'ఱ'
 } 
 # Note: 'క్ష' is strictly speaking k+sh+a, but often treated as a unit. 
-# However, for Chandas strict rules, we should handle it as composite if decomposable.
+# However, for Chandassu strict rules, we should handle it as composite if decomposable.
 # Standard unicode range often includes it. 
 # We will treat standard Unicode code points.
 # Let's ensure strict set definition.

@@ -1,6 +1,6 @@
 import pytest
-from telugu_chandas.jati_segmenter import segment_surya_indra, segment_kandam, gana_start_indices
-from telugu_chandas.jati_registry import JatiRegistry
+from telugu_chandassu.jati_segmenter import segment_surya_indra, segment_kandam, gana_start_indices
+from telugu_chandassu.jati_registry import JatiRegistry
 
 
 # ---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
-from .engine import ChandasEngine
+from .engine import ChandassuEngine
 from .models import Akshara, Token, IdentificationResult
 from .tokenizer import TeluguTokenizer
 from .analyzer import ProsodyAnalyzer
@@ -10,7 +10,7 @@ from .jati_registry import JatiRegistry, JatiMeterDefinition
 from .jati_identifier import JatiIdentifier
 
 __all__ = [
-    "ChandasEngine",
+    "ChandassuEngine",
     "TeluguTokenizer",
     "ProsodyAnalyzer",
     "RuleValidator",

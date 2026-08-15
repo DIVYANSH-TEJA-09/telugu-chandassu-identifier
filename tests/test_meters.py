@@ -1,7 +1,7 @@
 import pytest
-from telugu_chandas.engine import ChandasEngine
+from telugu_chandassu.engine import ChandassuEngine
 
-engine = ChandasEngine()
+engine = ChandassuEngine()
 
 MATTEBHAM = (
     "భవదున్మేషవిజృంభణంబు పరికింపంగా సరోజాతసం-\n"

@@ -15,7 +15,6 @@ authors = [
 ]
 keywords = [
     "telugu",
-    "chandas",
     "chandassu",
     "prosody",
     "meter",
@@ -50,17 +49,17 @@ Repository = "https://github.com/DIVYANSH-TEJA-09/telugu-chandassu-identifier"
 "Bug Tracker" = "https://github.com/DIVYANSH-TEJA-09/telugu-chandassu-identifier/issues"
 
 [tool.hatch.version]
-path = "telugu_chandas/__init__.py"
+path = "telugu_chandassu/__init__.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "telugu_chandas/",
+    "telugu_chandassu/",
     "LICENSE",
     "README.md",
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["telugu_chandas"]
+packages = ["telugu_chandassu"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

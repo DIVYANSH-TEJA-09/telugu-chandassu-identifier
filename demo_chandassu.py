@@ -3,7 +3,7 @@ import os
 
 sys.path.insert(0, os.getcwd())
 
-from telugu_chandas.engine import ChandasEngine
+from telugu_chandassu.engine import ChandassuEngine
 
 MATTEBHAM = (
     "భవదున్మేషవిజృంభణంబు పరికింపంగా సరోజాతసం-\n"
@@ -18,9 +18,9 @@ POEMS = [
 
 
 def main():
-    engine = ChandasEngine()
+    engine = ChandassuEngine()
 
-    print("Telugu Chandas Demo")
+    print("Telugu Chandassu Demo")
     print("=" * 50)
 
     for title, text in POEMS:

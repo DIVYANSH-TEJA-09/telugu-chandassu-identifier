@@ -1,15 +1,15 @@
-# telugu_chandas/engine.py
+# telugu_chandassu/engine.py
 
 from typing import List
 from .models import Token, Akshara, IdentificationResult
 from .tokenizer import TeluguTokenizer
 from .analyzer import ProsodyAnalyzer
-from .identifier import ChandasIdentifier
+from .identifier import ChandassuIdentifier
 from .jati_identifier import JatiIdentifier
 
-class ChandasEngine:
+class ChandassuEngine:
     """
-    Main entry point for Telugu Chandas analysis.
+    Main entry point for Telugu Chandassu analysis.
     Acts as a Facade over Tokenizer, Analyzer, and Identifier.
     """
     
@@ -139,7 +139,7 @@ class ChandasEngine:
         tokens = self.analyze(text, force_hyphen_at_line_ends=force_hyphen_at_line_ends)
         lines  = self.split_tokens_into_lines(tokens)
 
-        vritta = ChandasIdentifier().identify(lines)
+        vritta = ChandassuIdentifier().identify(lines)
         jati   = JatiIdentifier().identify(lines)
 
         return vritta if vritta.confidence_score >= jati.confidence_score else jati

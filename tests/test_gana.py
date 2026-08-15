@@ -1,4 +1,4 @@
-from telugu_chandas.gana import get_ganas_for_vritta
+from telugu_chandassu.gana import get_ganas_for_vritta
 
 def test_vritta_gana_mapping():
     # Test all 8 basic ganas

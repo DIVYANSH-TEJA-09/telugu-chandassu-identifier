@@ -1,4 +1,4 @@
-# telugu_chandas/jati_segmenter.py
+# telugu_chandassu/jati_segmenter.py
 
 from typing import List, Optional, Tuple
 from .gana import SURYA_GANAS, INDRA_GANAS, KANDAM_GANAS

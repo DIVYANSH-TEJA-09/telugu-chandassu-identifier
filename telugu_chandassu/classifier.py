@@ -1,4 +1,4 @@
-# telugu_chandas/classifier.py
+# telugu_chandassu/classifier.py
 
 from typing import List
 from .models import Akshara, Token, Weight

@@ -1,4 +1,4 @@
-# telugu_chandas/analyzer.py
+# telugu_chandassu/analyzer.py
 
 from typing import List
 from .models import Akshara, Weight

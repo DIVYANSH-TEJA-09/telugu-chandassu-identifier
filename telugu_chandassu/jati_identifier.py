@@ -1,4 +1,4 @@
-# telugu_chandas/jati_identifier.py
+# telugu_chandassu/jati_identifier.py
 
 from collections import Counter
 from typing import List, Optional, Tuple

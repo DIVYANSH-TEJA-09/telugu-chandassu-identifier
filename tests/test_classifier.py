@@ -6,9 +6,9 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from telugu_chandas.tokenizer import split_into_tokens
-from telugu_chandas.classifier import classify_token_weights
-from telugu_chandas.models import Weight
+from telugu_chandassu.tokenizer import split_into_tokens
+from telugu_chandassu.classifier import classify_token_weights
+from telugu_chandassu.models import Weight
 
 class TestClassifier(unittest.TestCase):
     
@@ -59,9 +59,9 @@ class TestClassifier(unittest.TestCase):
 
     def test_boundary_rule(self):
         # "ర మ్య" -> Ra (L), Mya (L). Space enforces wall — samyukta does NOT cross word boundary.
-        # Wall rule is applied by ChandasEngine.analyze(), not classify_token_weights directly.
-        from telugu_chandas.engine import ChandasEngine
-        tokens = ChandasEngine().analyze("ర మ్య")
+        # Wall rule is applied by the engine's analyze() method, not classify_token_weights directly.
+        from telugu_chandassu.engine import ChandassuEngine
+        tokens = ChandassuEngine().analyze("ర మ్య")
 
         word_tokens = [t for t in tokens if t.is_word]
         # word_tokens[0] = ర, word_tokens[1] = మ్య

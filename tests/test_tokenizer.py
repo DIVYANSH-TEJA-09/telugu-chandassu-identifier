@@ -7,8 +7,8 @@ import os
 # Put src on path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from telugu_chandas.tokenizer import split_into_tokens
-from telugu_chandas.constants import VIRAMA
+from telugu_chandassu.tokenizer import split_into_tokens
+from telugu_chandassu.constants import VIRAMA
 
 class TestTokenizer(unittest.TestCase):
     
@@ -66,7 +66,7 @@ class TestTokenizer(unittest.TestCase):
     def test_hyphenation_tokens(self):
         # "రాము- \nడు" -> Should be 2 word tokens with hyphen preserved in text
         text = "రాము-\nడు"
-        from telugu_chandas.tokenizer import normalize_text
+        from telugu_chandassu.tokenizer import normalize_text
         norm = normalize_text(text)
         # Normalization should NOT merge now
         self.assertEqual(norm, "రాము-\nడు")

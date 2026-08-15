@@ -1,4 +1,4 @@
-# telugu_chandas/validator.py
+# telugu_chandassu/validator.py
 
 from typing import List, Tuple, Optional
 from .models import Akshara
@@ -7,7 +7,7 @@ from .locale import YATI_CATEGORY_NAMES_TE, MAITRI_GROUP_NAMES_TE
 
 class RuleValidator:
     """
-    Validates various rules of Telugu Chandas (Yati, Prasa, etc.).
+    Validates various rules of Telugu Chandassu (Yati, Prasa, etc.).
     """
 
     @staticmethod

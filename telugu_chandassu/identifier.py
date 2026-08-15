@@ -1,4 +1,4 @@
-# telugu_chandas/identifier.py
+# telugu_chandassu/identifier.py
 
 from typing import List, Dict
 from collections import Counter
@@ -7,7 +7,7 @@ from .registry import MeterRegistry, MeterDefinition
 from .validator import RuleValidator
 from .analyzer import ProsodyAnalyzer
 
-class ChandasIdentifier:
+class ChandassuIdentifier:
     """
     Identifies the meter of a given set of aksharas lines.
     """

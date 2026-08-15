@@ -1,4 +1,4 @@
-# telugu_chandas/jati_registry.py
+# telugu_chandassu/jati_registry.py
 
 from dataclasses import dataclass
 from typing import List, Optional, Dict, Tuple

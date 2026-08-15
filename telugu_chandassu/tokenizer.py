@@ -1,4 +1,4 @@
-# telugu_chandas/tokenizer.py
+# telugu_chandassu/tokenizer.py
 
 import re
 from typing import List, Optional

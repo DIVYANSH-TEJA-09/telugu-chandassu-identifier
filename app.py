@@ -2,11 +2,11 @@ import streamlit as st
 import sys, os
 sys.path.insert(0, os.getcwd())
 
-from telugu_chandas.engine import ChandasEngine
-from telugu_chandas.locale import GANA_NAMES_TE, METER_NAMES_TE, METER_TYPE_TE
-from telugu_chandas.analyzer import ProsodyAnalyzer
-from telugu_chandas.jati_registry import JatiRegistry
-from telugu_chandas.jati_segmenter import segment_surya_indra, segment_kandam
+from telugu_chandassu.engine import ChandassuEngine
+from telugu_chandassu.locale import GANA_NAMES_TE, METER_NAMES_TE, METER_TYPE_TE
+from telugu_chandassu.analyzer import ProsodyAnalyzer
+from telugu_chandassu.jati_registry import JatiRegistry
+from telugu_chandassu.jati_segmenter import segment_surya_indra, segment_kandam
 
 st.set_page_config(
     page_title="తెలుగు ఛందస్సు విశ్లేషకం",
@@ -163,7 +163,7 @@ def get_line_ganas(w_str, meter_name, pada_idx):
 
 @st.cache_resource
 def get_engine():
-    return ChandasEngine()
+    return ChandassuEngine()
 
 engine = get_engine()
 
@@ -172,7 +172,7 @@ engine = get_engine()
 
 with st.sidebar:
     st.markdown("## 📜 ఛందస్సు విశ్లేషకం")
-    st.caption("Telugu Chandas Identifier")
+    st.caption("Telugu Chandassu Identifier")
     st.divider()
 
     app_mode = st.radio(
@@ -209,7 +209,7 @@ with st.sidebar:
 # ── learning mode ─────────────────────────────────────────────────────────────
 
 if app_mode == "Learning Resources":
-    from telugu_chandas.learning_materials import render_learning_section
+    from telugu_chandassu.learning_materials import render_learning_section
     render_learning_section()
 
 # ── analyzer mode ─────────────────────────────────────────────────────────────
@@ -411,7 +411,7 @@ else:
             else:
                 st.markdown("""<div class="unk">
 <h3>🔎 గుర్తించబడని పద్యం</h3>
-<p>No matching meter found. Ensure the poem is in Telugu and follows a standard chandas.</p>
+<p>No matching meter found. Ensure the poem is in Telugu and follows standard Chandassu rules.</p>
 </div>""", unsafe_allow_html=True)
 
             # ── line-by-line breakdown ─────────────────────────────────────

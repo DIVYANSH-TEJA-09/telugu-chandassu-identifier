@@ -15,11 +15,6 @@ A rule-based Python engine for identifying and analyzing Telugu prosodic meters 
 pip install telugu-chandassu
 ```
 
-### With Interactive Streamlit App
-```bash
-pip install "telugu-chandassu[app]"
-```
-
 ### For Development & Testing
 ```bash
 pip install "telugu-chandassu[dev]"
@@ -59,9 +54,9 @@ pip install "telugu-chandassu[dev]"
 ## Usage
 
 ```python
-from telugu_chandas import ChandasEngine
+from telugu_chandassu import ChandassuEngine
 
-engine = ChandasEngine()
+engine = ChandassuEngine()
 
 poem_text = """భవదున్మేషవిజృంభణంబు పరికింపంగా సరోజాతసం-
 భవు జన్మంబు భవన్నిమేష మమితబ్రహ్మాండకల్పాంత భై-
@@ -86,16 +81,6 @@ for token in tokens:
 
 # 3. Debug Output
 print(engine.debug_output(poem_text))
-```
-
----
-
-## Running the Web UI
-
-If installed with the `[app]` extra or from source:
-
-```bash
-streamlit run app.py
 ```
 
 ---

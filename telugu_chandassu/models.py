@@ -1,4 +1,4 @@
-# telugu_chandas/models.py
+# telugu_chandassu/models.py
 
 from dataclasses import dataclass, field
 from enum import Enum, auto
