@@ -1,3 +1,5 @@
+__version__ = "0.1.0"
+
 from .engine import ChandasEngine
 from .models import Akshara, Token, IdentificationResult
 from .tokenizer import TeluguTokenizer

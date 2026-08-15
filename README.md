@@ -1,71 +1,113 @@
-# Telugu Chandas Identifier
+# Telugu Chandassu Identifier (`telugu-chandassu`)
 
-A rule-based engine for identifying Telugu prosodic meters (Chandassu). Classifies Laghu/Guru weights and matches **Vritta**, **Jati**, and **Upajati** padyam.
+[![PyPI version](https://img.shields.io/pypi/v/telugu-chandassu.svg)](https://pypi.org/project/telugu-chandassu/)
+[![Python versions](https://img.shields.io/pypi/pyversions/telugu-chandassu.svg)](https://pypi.org/project/telugu-chandassu/)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
+A rule-based Python engine for identifying and analyzing Telugu prosodic meters (ఛందస్సు). It classifies Laghu (లఘువు) and Guru (గురువు) weights and matches **Vritta** (వృత్తం), **Jati** (జాతి), and **Upajati** (ఉపజాతి) padyam with detailed Gana, Yati, and Prasa breakdowns.
+
+---
+
+## Installation
+
+### Core Library (Zero External Dependencies)
+```bash
+pip install telugu-chandassu
+```
+
+### With Interactive Streamlit App
+```bash
+pip install "telugu-chandassu[app]"
+```
+
+### For Development & Testing
+```bash
+pip install "telugu-chandassu[dev]"
+```
+
+---
 
 ## Supported Meters
 
-**Vritta** (syllabic — 3-akshara ganas):
+### **Vritta** (వృత్తం — Syllabic / 3-akshara ganas)
 
-| Meter | Gana Sequence | Yati Position |
-|---|---|---|
-| Utpalamala | Bha Ra Na Bha Bha Ra Va | 10 |
-| Champakamala | Na Ja Bha Ja Ja Ja Ra | 11 |
-| Shardulam | Ma Sa Ja Sa Ta Ta Ga | 13 |
-| Mattebham | Sa Bha Ra Na Ma Ya Va | 14 |
+| Meter (తెలుగు) | Meter (English) | Gana Sequence | Yati Position |
+|---|---|---|---|
+| ఉత్పలమాల | Utpalamala | Bha Ra Na Bha Bha Ra Va | 10 |
+| చంపకమాల | Champakamala | Na Ja Bha Ja Ja Ja Ra | 11 |
+| శార్దూలము | Shardulam | Ma Sa Ja Sa Ta Ta Ga | 13 |
+| మత్తేభము | Mattebham | Sa Bha Ra Na Ma Ya Va | 14 |
 
-**Jati** (matra-based — Surya/Indra ganas, with Prasa):
+### **Jati** (జాతి — Matra-based with Surya/Indra ganas, Prasa required)
 
-| Meter | Padas | Structure |
-|---|---|---|
-| Dwipada | 2 | 3 Indra + 1 Surya per pada |
-| Taruvoja | 4 | (3 Indra + 1 Surya) × 2 per pada |
-| Kandam | 4 | Odd: 3 K-ganas, Even: 5 K-ganas |
+| Meter (తెలుగు) | Meter (English) | Padas | Structure |
+|---|---|---|---|
+| ద్విపద | Dwipada | 2 | 3 Indra + 1 Surya per pada |
+| తరువోజ | Taruvoja | 4 | (3 Indra + 1 Surya) × 2 per pada |
+| కందం | Kandam | 4 | Odd: 3 K-ganas, Even: 5 K-ganas |
 
-**Upajati** (Jati without Prasa — Prasa-Yati allowed):
+### **Upajati** (ఉపజాతి — Matra-based, Prasa not required, Prasa-Yati allowed)
 
-| Meter | Padas | Structure |
-|---|---|---|
-| Ataveladi | 4 | Odd: 3 Indra + 2 Surya, Even: 5 Surya |
-| Tetagiti | 4 | 1 Surya + 2 Indra + 2 Surya per pada |
-| Sisam | 4 | 6 Indra + 2 Surya per pada |
+| Meter (తెలుగు) | Meter (English) | Padas | Structure |
+|---|---|---|---|
+| ఆటవెలది | Ataveladi | 4 | Odd: 3 Indra + 2 Surya, Even: 5 Surya |
+| తేటగీతి | Tetagiti | 4 | 1 Surya + 2 Indra + 2 Surya per pada |
+| సీసం | Sisam | 4 | 6 Indra + 2 Surya per pada |
+
+---
 
 ## Usage
 
 ```python
-from telugu_chandas.engine import ChandasEngine
+from telugu_chandas import ChandasEngine
 
 engine = ChandasEngine()
 
-# Identify meter
-result = engine.identify_meter(poem_text)
-print(result.meter_name)       # e.g. "Mattebham"
-print(result.confidence)       # e.g. "95.0%"
-print(result.yati_valid)       # True / False
-print(result.prasa_valid)      # True / False
-print(result.ganas_found)      # ["Sa", "Bha", "Ra", ...]
-print(result.yati_notes)       # per-line yati detail strings
-print(result.prasa_note)       # prasa consonant string
+poem_text = """భవదున్మేషవిజృంభణంబు పరికింపంగా సరోజాతసం-
+భవు జన్మంబు భవన్నిమేష మమితబ్రహ్మాండకల్పాంత భై-
+రవసంక్షోభిత మన్నఁ దక్కిన భవత్ప్రారంభభూరిక్రియా-
+నివహం బెవ్వరు నేర్తు రిట్టిదని వర్ణింపంగ సర్వేశ్వరా!"""
 
-# Analyze weights only
+# 1. Identify Meter
+result = engine.identify_meter(poem_text)
+print("Meter Name     :", result.meter_name)       # "Mattebham"
+print("Confidence     :", result.confidence)       # "95.0%"
+print("Yati Valid     :", result.yati_valid)       # True
+print("Prasa Valid    :", result.prasa_valid)      # True
+print("Ganas Found    :", result.ganas_found)      # ['Sa', 'Bha', 'Ra', 'Na', 'Ma', 'Ya', 'Va']
+print("Prasa Consonant:", result.prasa_note)       # Main Prasa: వ
+
+# 2. Analyze Individual Aksharas & Weights
 tokens = engine.analyze(poem_text)
 for token in tokens:
     if token.is_word:
         for ak in token.aksharas:
-            print(ak.text, ak.weight.value)  # e.g. "భ" "I"
+            print(f"{ak.text}: {ak.weight.value}")  # e.g. "భ": "I", "వ": "I", "దు": "U"
 
-# Debug weight breakdown
+# 3. Debug Output
 print(engine.debug_output(poem_text))
 ```
 
-## Run the App
+---
+
+## Running the Web UI
+
+If installed with the `[app]` extra or from source:
 
 ```bash
 streamlit run app.py
 ```
 
-## Run Tests
+---
+
+## Running Tests
 
 ```bash
-pip install pytest
 pytest tests/ -v
 ```
+
+---
+
+## License
+
+This project is licensed under the [GNU Affero General Public License v3 (AGPL-3.0)](LICENSE).

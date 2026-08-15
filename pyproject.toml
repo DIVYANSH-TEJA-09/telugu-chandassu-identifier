@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "telugu-chandassu"
+dynamic = ["version"]
+description = "A rule-based engine for identifying Telugu prosodic meters (Chandassu) — Vritta, Jati, and Upajati padyam."
+readme = "README.md"
+license = "AGPL-3.0-only"
+requires-python = ">=3.11"
+authors = [
+    { name = "Divyansh Teja", email = "edladivyanshteja@gmail.com" },
+    { name = "Sanjay", email = "sanjay@example.com" },
+]
+keywords = [
+    "telugu",
+    "chandas",
+    "chandassu",
+    "prosody",
+    "meter",
+    "poetry",
+    "nlp",
+    "linguistics",
+    "vritta",
+    "jati",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Text Processing :: Linguistic",
+    "Natural Language :: Telugu",
+]
+
+[project.optional-dependencies]
+app = ["streamlit>=1.28.0"]
+dev = ["pytest>=7.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/DIVYANSH-TEJA-09/telugu-chandassu-identifier"
+Repository = "https://github.com/DIVYANSH-TEJA-09/telugu-chandassu-identifier"
+"Bug Tracker" = "https://github.com/DIVYANSH-TEJA-09/telugu-chandassu-identifier/issues"
+
+[tool.hatch.version]
+path = "telugu_chandas/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "telugu_chandas/",
+    "LICENSE",
+    "README.md",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["telugu_chandas"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
